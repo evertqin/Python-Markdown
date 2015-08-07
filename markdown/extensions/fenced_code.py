@@ -35,14 +35,23 @@ class FencedCodeExtension(Extension):
 
 
 class FencedBlockPreprocessor(Preprocessor):
+    #  FENCED_BLOCK_RE = re.compile(r'''
+    #     (?P<fence>^([\s\t]*)(?:~{3,}|`{3,}))[ ]*         # Opening ``` or ~~~
+    # (\{?\.?(?P<lang>[a-zA-Z0-9_+-]*))?[ ]*  # Optional {, and lang
+    # # Optional highlight lines, single- or double-quote-delimited
+    # (hl_lines=(?P<quot>"|')(?P<hl_lines>.*?)(?P=quot))?[ ]*
+    # }?[ ]*\n                                # Optional closing }
+    # (?P<code>.*?)(?<=\n)
+    # (?P=fence)[ ]*$''', re.MULTILINE | re.DOTALL | re.VERBOSE)
     FENCED_BLOCK_RE = re.compile(r'''
-(?P<fence>^(?:~{3,}|`{3,}))[ ]*         # Opening ``` or ~~~
-(\{?\.?(?P<lang>[a-zA-Z0-9_+-]*))?[ ]*  # Optional {, and lang
-# Optional highlight lines, single- or double-quote-delimited
-(hl_lines=(?P<quot>"|')(?P<hl_lines>.*?)(?P=quot))?[ ]*
-}?[ ]*\n                                # Optional closing }
-(?P<code>.*?)(?<=\n)
-(?P=fence)[ ]*$''', re.MULTILINE | re.DOTALL | re.VERBOSE)
+    (?P<fence_begin>^([\s\t]*)(?:~{3,}|`{3,}))[ ]*         # Opening ``` or ~~~
+    (\{?\.?(?P<lang>[a-zA-Z0-9_+-]*))?[ ]*  # Optional {, and lang
+    # Optional highlight lines, single- or double-quote-delimited
+    (hl_lines=(?P<quot>"|')(?P<hl_lines>.*?)(?P=quot))?[ ]*
+    }?[ ]*\n                                # Optional closing }
+    (?P<code>.*?)(?<=\n)
+    (?P<fence_end>^([\s\t]*)(?:~{3,}|`{3,}))[ ]*
+    $''', re.MULTILINE | re.DOTALL | re.VERBOSE)
     CODE_WRAP = '<pre><code%s>%s</code></pre>'
     LANG_TAG = ' class="%s"'
 
@@ -72,7 +81,14 @@ class FencedBlockPreprocessor(Preprocessor):
                 if m.group('lang'):
                     lang = self.LANG_TAG % m.group('lang')
 
-                # If config is not empty, then the codehighlite extension
+                indent_space = ''
+                if m.group('fence_begin'):
+                    match_str = m.group('fence_begin')
+                    match_loc = re.search(r'[^\s\t]', match_str).start()
+                    if match_loc:
+                        indent_space = match_str[1:match_loc]
+
+                        # If config is not empty, then the codehighlite extension
                 # is enabled, so we call it to highlight the code
                 if self.codehilite_conf:
                     highliter = CodeHilite(
@@ -93,10 +109,11 @@ class FencedBlockPreprocessor(Preprocessor):
 
                 placeholder = self.markdown.htmlStash.store(code, safe=True)
                 text = '%s\n%s\n%s' % (text[:m.start()],
-                                       placeholder,
+                                       indent_space + placeholder,
                                        text[m.end():])
             else:
                 break
+
         return text.split("\n")
 
     def _escape(self, txt):

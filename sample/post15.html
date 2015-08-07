@@ -1,0 +1,51 @@
+<ol>
+<li>
+<p>This is a title</p>
+<p>Some nested code blocks</p>
+</li>
+<li>
+<p>Also Test</p>
+<p>The C++ source files need to be specially wrapped to expose function interfaces to managed code: in the header file: (headers.hh), need to
+<em> Wrap all the function signatures in <code>extern "C"</code> because we don't want C++ compiler to mangle the function name.
+</em> append <code>__declspec(dllexport)</code> before function declearation.</p>
+<p>a basic example, first creat an empty C++ dll project and add two files: headers.hh and source.cc. In header.hh file, add the following lines:</p>
+<pre><code>    <pre><code class="cpp">#ifndef CPPLIB_HEADERS_HH
+#define CPPLIB_HEADERS_HH
+
+extern &quot;C&quot;
+{
+    __declspec(dllexport) void get_simple_type(int num);
+}
+
+#endif
+</code></pre>
+</code></pre>
+</li>
+</ol>
+<pre><code class="csharp">[DllImport(&quot;CppLib.dll&quot;)]
+public static extern IntPtr make_1d_array(double[] nums, int size);
+[DllImport(&quot;CppLib.dll&quot;)]
+public static extern int release_one_dim(IntPtr toFree);
+
+public void RetriveArrayType()
+{
+    Console.WriteLine(&quot;Retriving Array&quot;);
+    double[] nums = { 1, 2, 3, 4, 5 };
+    IntPtr ptr = make_1d_array(nums, nums.Length);
+    OneDimRetArray result = (OneDimRetArray)Marshal.PtrToStructure(ptr,
+                            typeof(OneDimRetArray));
+
+    double[] num = new double[result.size];
+    Marshal.Copy(result.content, num, 0, result.size);
+    foreach (double d in num)
+    {
+        Console.Write(d + &quot;, &quot;);
+    }
+    Console.WriteLine();
+
+    int release = release_one_dim(ptr);
+}
+</code></pre>
+
+<p>Run the whole project, you should see the following output.
+<img alt="Run Result" src="/home/ruogu/Pictures/Capture.PNG" /></p>

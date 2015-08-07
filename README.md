@@ -33,3 +33,9 @@ You may ask for help and discuss various other issues on the [mailing list][] an
 
 [mailing list]: http://lists.sourceforge.net/lists/listinfo/python-markdown-discuss
 [bug tracker]: http://github.com/waylan/Python-Markdown/issues 
+
+
+#### My Two Cents!!!!!
+to test this come to this folder and run
+python3.4 -m markdown -help
+python3.4 -m markdown -x extra sample/post15.md -f sample/post15.html

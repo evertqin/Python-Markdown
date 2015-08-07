@@ -126,6 +126,7 @@ class Markdown(object):
                           DeprecationWarning)
 
         # Loop through kwargs and assign defaults
+
         for option, default in self.option_defaults.items():
             setattr(self, option, kwargs.get(option, default))
 
