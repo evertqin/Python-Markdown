@@ -12,15 +12,15 @@
       a basic example, first creat an empty C++ dll project and add two files: headers.hh and source.cc. In header.hh file, add the following lines:
 
             ~~~~{.cpp}
-#ifndef CPPLIB_HEADERS_HH
-#define CPPLIB_HEADERS_HH
-
-extern "C"
-{
-	__declspec(dllexport) void get_simple_type(int num);
-}
-
-#endif
+            #ifndef CPPLIB_HEADERS_HH
+            #define CPPLIB_HEADERS_HH
+            
+            extern "C"
+            {
+            	__declspec(dllexport) void get_simple_type(int num);
+            }
+            
+            #endif
             ~~~~
 
 

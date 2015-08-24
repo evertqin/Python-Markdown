@@ -108,9 +108,11 @@ class FencedBlockPreprocessor(Preprocessor):
                                              self._escape(m.group('code')))
 
                 placeholder = self.markdown.htmlStash.store(code, safe=True)
+
                 text = '%s\n%s\n%s' % (text[:m.start()],
                                        indent_space + placeholder,
                                        text[m.end():])
+                
             else:
                 break
 

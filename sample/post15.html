@@ -9,15 +9,15 @@
 <em> Wrap all the function signatures in <code>extern "C"</code> because we don't want C++ compiler to mangle the function name.
 </em> append <code>__declspec(dllexport)</code> before function declearation.</p>
 <p>a basic example, first creat an empty C++ dll project and add two files: headers.hh and source.cc. In header.hh file, add the following lines:</p>
-<pre><code>    <pre><code class="cpp">#ifndef CPPLIB_HEADERS_HH
-#define CPPLIB_HEADERS_HH
+<pre><code>    <pre><code class="cpp">            #ifndef CPPLIB_HEADERS_HH
+            #define CPPLIB_HEADERS_HH
 
-extern &quot;C&quot;
-{
-    __declspec(dllexport) void get_simple_type(int num);
-}
+            extern &quot;C&quot;
+            {
+                __declspec(dllexport) void get_simple_type(int num);
+            }
 
-#endif
+            #endif
 </code></pre>
 </code></pre>
 </li>
